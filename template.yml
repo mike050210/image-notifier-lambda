@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Create a Lambda function that reads from SQS messages, processes them as batch and notifies to SNS.
+
+Resources:
+  NotificationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: image-uploads-batch-notifier
+      Description: Lambda to be invoked by the Event Bridge schedule to retrieve SQS messages from queue.
+      CodeUri: .
+      Handler: com.epam.aws.notifier.handler.ImageNotifierHandler
+      Runtime: java11
+      Role: arn:aws:iam::435142194056:role/TrainingLambdaRole
+      Architectures:
+        - x86_64
+      Timeout: 15
+      MemorySize: 512
+
+      Events:
+        ScheduledFunction:
+          Type: Schedule
+          Properties:
+            Schedule: rate(2 minute)
