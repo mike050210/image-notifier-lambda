@@ -6,9 +6,9 @@ Resources:
   NotificationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: image-uploads-batch-notifier
+      FunctionName: image-upload-notifier
       Description: Lambda to be invoked by the Event Bridge schedule to retrieve SQS messages from queue.
-      CodeUri: .
+      CodeUri: image-uploads-batch-notifier
       Handler: com.epam.aws.notifier.handler.ImageNotifierHandler
       Runtime: java11
       Role: arn:aws:iam::435142194056:role/TrainingLambdaRole
@@ -17,8 +17,12 @@ Resources:
       Timeout: 15
       MemorySize: 512
 
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: AllAtOnce
+
       Events:
         ScheduledFunction:
           Type: Schedule
           Properties:
-            Schedule: rate(2 minute)
+            Schedule: rate(2 minutes)
